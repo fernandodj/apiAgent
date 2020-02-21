@@ -10,12 +10,30 @@ import (
 	"log"
 )
 
+type CpuInfo struct {
+	Usage, Model, Type, Uptime string
+}
+
+type ProcessInfo struct {
+	Mem_Perc 		string `json: "MEM_PERC"`
+	Cmd 		string `json: "CMD"` 
+	User 		string `json: "USER"`
+	Pid 		string `json: "PID"`
+	Ppid 		string `json: "PPID"`
+	Time 		string `json: "TIME"`
+	Cpu_Perc 		string `json: "CPU_PERC"`
+}
+
+type UserInfo struct {
+	Date, Line, Name, Hour string
+}
+
 type ServerInfo struct {
-	Cpu string
-	ProcessList string 
-	Users string
-	NameOS string
-	VersionOS string 
+	Cpu 		CpuInfo
+	ProcessData []ProcessInfo 
+	Users 		[]UserInfo
+	OsName 		string
+	OsVersion 	string 
 }
 
 func saveInfo(w http.ResponseWriter, r *http.Request){
