@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"time"
 	"log"
+	"strings"
 )
 
 type CpuInfo struct {
@@ -15,13 +16,13 @@ type CpuInfo struct {
 }
 
 type ProcessInfo struct {
-	Mem_Perc 		string `json: "MEM_PERC"`
+	Mem_Perc 	string `json: "MEM_PERC"`
 	Cmd 		string `json: "CMD"` 
 	User 		string `json: "USER"`
 	Pid 		string `json: "PID"`
 	Ppid 		string `json: "PPID"`
 	Time 		string `json: "TIME"`
-	Cpu_Perc 		string `json: "CPU_PERC"`
+	Cpu_Perc 	string `json: "CPU_PERC"`
 }
 
 type UserInfo struct {
@@ -39,9 +40,12 @@ type ServerInfo struct {
 func saveInfo(w http.ResponseWriter, r *http.Request){
 	var serverInfo ServerInfo
 	currentTime := time.Now()
-	filename := fmt.Sprintf("%s_%s.json", r.RemoteAddr, currentTime.Format("2006-01-02"))
+	ip := strings.Split(r.RemoteAddr, ":")
+	filename := fmt.Sprintf("compliance_result/%s_%s_%02d%02d%02d.json", ip[0], currentTime.Format("20060102"), currentTime.Hour(), currentTime.Minute(), currentTime.Second())
+
 	_ = json.NewDecoder(r.Body).Decode(&serverInfo)
-	jsonServer, errBody := json.Marshal(serverInfo)
+	jsonServer, errBody := json.MarshalIndent(serverInfo, "", "    ")
+
 	if errBody != nil {
 		log.Fatal(errBody)
 		http.Error(w, "Error parsing body", http.StatusBadRequest)
@@ -56,6 +60,7 @@ func saveInfo(w http.ResponseWriter, r *http.Request){
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		w.Write(jsonServer)
+		w.Write([]byte("\n Successfully saved!!"))
 	}
 	
 }
