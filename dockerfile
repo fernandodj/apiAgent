@@ -2,10 +2,11 @@
 FROM golang:1.13
 
 # Set the Current Working Directory inside the container
-WORKDIR $GOPATH/src/agentApi
+WORKDIR $GOPATH/src/apiAgent
 
 COPY . .
 
+RUN mkdir compliance_result
 # Download all the dependencies
 RUN go get -d -v ./...
 
@@ -14,6 +15,10 @@ RUN go install -v ./...
 
 EXPOSE 80
 
-RUN cd api && go build -o ../main
+RUN cd app && go build -o ../main
 
 CMD ./main
+
+
+
+
