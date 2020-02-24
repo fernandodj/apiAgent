@@ -6,13 +6,6 @@ import (
 		"net/http"
 	)
 
-/* type Process struct {
-	Id int
-	Time string
-	Cmd string
-} */
-
-
 
 func main() {
 	router := mux.NewRouter().StrictSlash(true)
